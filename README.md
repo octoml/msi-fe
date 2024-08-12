@@ -1,3 +1,6 @@
+<img width="1207" alt="image" src="https://github.com/user-attachments/assets/ea03cf4a-f0a9-4fee-a745-0e4fde7c67d3">
+
+
 ## Modify Params for Deploy
 Go to .streamlit/examples.toml and change base url to be the endpoint. It must end with /v1.
 Change the model_name to be the model name from the docker-compose file.
