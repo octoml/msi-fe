@@ -16,13 +16,3 @@ st.info("""
 # Create buttons that link to specific pages
 if st.button("Comment Sentiment", type="primary", key='sentiment'):
     st.switch_page("pages/1_Sentiment.py")
-    
-st.info("""
- Email Summary: This agent is an email assistant that helps with email-related tasks such as 
-            summarizing conversations, writing tentative replies, and rephrasing content. 
-            It follows a structured template to providing summaries and suggest follow ups.
-""")
-
-if st.button("Email Summary", type="primary", key='summarize'):
-    st.switch_page("pages/2_Summary.py")
-    

@@ -9,9 +9,6 @@ MODEL_NAME = examples["inference_params"]["model_name"]
 API_KEY = examples["inference_params"]["key"]
 BASE_URL = examples["inference_params"]["base_url"]
 
-# def render_sidebar():
-#     ''
-
 def render_main_content():
     st.title("MSI-GPT: Comment Sentiment")
     st.warning("""This Proof of Concept is a non-production demonstration version of OctoStack, provided exclusively for evaluation and testing purposes. 
@@ -23,12 +20,6 @@ def render_main_content():
                 """)
     st.markdown("---")
     
-    st.info("""
-            This agent is designed to analyze and summarize social media posts by identifying key 
-            themes, determining sentiment, and providing a sentiment score along with 
-            suggestions for improvement. 
-            """)
-
 def initialize_session_state():
     if "messages" not in st.session_state:
         st.session_state["messages"] = [
@@ -42,28 +33,6 @@ def display_chat_messages():
         st.chat_message(msg["role"]).write(msg["content"])
         
 def handle_user_input(client, system_message):
-    
-    # Button for Example: Coffee Machine Email Thread
-    if st.button("Example: Wood Pellet Grill Sentiment Analysis", type='primary'):
-        prompt = examples['sentiment']['sentiment_example'] 
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        st.chat_message("user").write(prompt)
-
-        # Include entire chat history
-        messages_for_api = [system_message] + st.session_state.messages
-        stream = client.chat.completions.create(
-            model=MODEL_NAME, 
-            messages=messages_for_api, 
-            max_tokens=4096,
-            stream=True
-        )
-        
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.session_state["response"] = response
-        
     # Regular user input
     if prompt := st.chat_input("Message"):
         st.session_state.messages.append({"role": "user", "content": prompt})
@@ -73,16 +42,17 @@ def handle_user_input(client, system_message):
         messages_for_api = [system_message] + st.session_state.messages
         
         with st.chat_message("assistant"):
-            stream = client.chat.completions.create(
+            response = client.chat.completions.create(
                 model=MODEL_NAME, 
                 messages=messages_for_api, 
                 max_tokens=4096,
-                stream=True
+                stream=False,
+                temperature=0.0
             )
-            response = st.write_stream(stream)
+            st.write(response.choices[0].message.content)
         
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        st.session_state["response"] = response
+        st.session_state.messages.append({"role": "assistant", "content": response.choices[0].message.content})
+        st.session_state["response"] = response.choices[0].message.content
         
 def reset_session_state_button():
     if st.button("Reset chat history", type='secondary', key="reset_chat_sentiment"):
